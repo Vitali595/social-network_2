@@ -14,6 +14,7 @@ import usersReducer, {
 import authReducer, {setAuthUserData} from "./auth-reducer";
 import thunkMiddleware from "redux-thunk";
 import {reducer as formReducer} from "redux-form";
+import appReducer, {initializedSuccess} from "./app-reducer";
 
 export type AppStateType = ReturnType<typeof rootReducer>
 
@@ -29,6 +30,7 @@ export type ActionsTypes = ReturnType<typeof addPostActionCreator>
     | ReturnType<typeof setAuthUserData>
     | ReturnType<typeof toggleFollowingProgress>
     | ReturnType<typeof setStatus>
+    | ReturnType<typeof initializedSuccess>
 
 const rootReducer = combineReducers({
     profilePage: profileReducer,
@@ -36,7 +38,8 @@ const rootReducer = combineReducers({
     sidebar: sidebarReducer,
     usersPage: usersReducer,
     auth: authReducer,
-    form: formReducer
+    form: formReducer,
+    app: appReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware))

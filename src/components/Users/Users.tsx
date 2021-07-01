@@ -3,6 +3,8 @@ import s from "./Users.module.css";
 import userPhoto from "../../assets/images/user.png"
 import {UserType} from "../../redux/users-reducer";
 import {NavLink} from "react-router-dom";
+import {Paginator} from "../../common/Paginator/Paginator";
+import {User} from "./User";
 
 type UsersPropsType = {
     users: Array<UserType>
@@ -15,57 +17,19 @@ type UsersPropsType = {
     followingInProgress: number[]
 }
 
-const Users = (props: UsersPropsType) => {
-
-    let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize)
-
-    let pages = []
-    for (let i = 1; i <= pagesCount; i++) {
-        pages.push(i)
+export const Users: React.FC<UsersPropsType> = (
+    {
+        totalUsersCount, pageSize, currentPage, onPageChanged,
+        users, follow, unfollow, followingInProgress, ...props
     }
+) => {
 
-    return (
+    return <div>
+        <Paginator totalUsersCount={totalUsersCount} pageSize={pageSize}
+                   currentPage={currentPage} onPageChanged={onPageChanged}/>
         <div>
-            <div>
-                {pages.map(p => {
-                    return <span key={p} className={props.currentPage === p ? s.selectedPage : ""}
-                                 onClick={(e) => {
-                                     props.onPageChanged(p)
-                                 }}>{p}</span>
-                })}
-            </div>
-            {props.users.map(u => <div key={u.id}>
-                <div>
-                    {u.followed
-                        ? <button disabled={props.followingInProgress.some(id => id === u.id)} onClick={() => {
-                            props.unfollow(u.id)
-
-                        }}>Unfollow</button>
-                        : <button disabled={props.followingInProgress.some(id => id === u.id)} onClick={() => {
-                            props.follow(u.id)
-                        }}>Follow</button>}
-
-                    <div>
-                        <NavLink to={"/profile/" + u.id}>
-                            <img className={s.avatar}
-                                 src={u.photos.small != null ? u.photos.small : userPhoto}/>
-                        </NavLink>
-                    </div>
-                </div>
-                <div>
-                    {u.name}
-                </div>
-                <div>
-                    {u.status}
-                </div>
-                <div>
-                    {"u.location.city"}
-                </div>
-                <div>
-                    {"u.location.country"}
-                </div>
-            </div>)}</div>
-    )
+            {users.map(u => <User user={u} follow={follow} unfollow={unfollow}
+                                  followingInProgress={followingInProgress} key={u.id}/>)}
+        </div>
+    </div>
 }
-
-export default Users
